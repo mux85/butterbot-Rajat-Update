@@ -1,0 +1,52 @@
+"use client";
+
+import { BubbleChat } from 'flowise-embed-react'
+
+const Butterbot = () => {
+    return (
+        <BubbleChat
+            chatflowid="5d7bf40b-1100-4b1c-bf80-ee6119ff1fa7"
+            apiHost="https://gnoo.onrender.com"
+            chatflowConfig={{ /* topK: 2 */ }}
+            theme={{
+                button: {
+                    backgroundColor: "#dac8ff",
+                    right: 20,
+                    bottom: 20,
+                    size: "medium",
+                    iconColor: "white",
+                    customIconSrc: "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/boticonmain.png?v=1689692663",
+                },
+                chatWindow: {
+                    welcomeMessage: "Welcome to Butterbot! How can I assist you today?",
+                    backgroundColor: "#ffffff",
+                    height: 600,
+                    width: 400,
+                    fontSize: 14,
+                    poweredByTextColor: "#ffffff",
+                    botMessage: {
+                        backgroundColor: "#f7f8ff",
+                        textColor: "#303235",
+                        showAvatar: true,
+                        avatarSrc: "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/boticonmain.png?v=1689692663",
+                    },
+                    userMessage: {
+                        backgroundColor: "#3B81F6",
+                        textColor: "#ffffff",
+                        showAvatar: true,
+                        avatarSrc: "https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png",
+                    },
+                    textInput: {
+                        placeholder: "Type your question",
+                        backgroundColor: "#ffffff",
+                        textColor: "#303235",
+                        sendButtonColor: "#3B81F6",
+                    }
+                }
+            }}
+        />
+    );
+};
+
+export default Butterbot;
+

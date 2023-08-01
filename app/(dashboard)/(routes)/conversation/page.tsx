@@ -39,7 +39,7 @@ const YourNewPage = () => {
         </div>
         <div>
           <Link href={`/customise?botName=${botName}`} passHref>
-            <Button as="a" className="bg-green-500 px-6 text-white hover:bg-green-600">
+            <Button as="a" className="bg-orange-500 px-6 text-white hover:bg-orange-600">
               <div className="flex items-center">
                 <Bot className="mr-2 h-4 w-4" />
                 Customize your bot
@@ -58,23 +58,23 @@ const YourNewPage = () => {
             chatWindow: {
               height: 500,
               welcomeMessage: "Welcome to Butterbot! As part of this demo, we may only use part of your data. However, rest assured, you'll get a comprehensive sense of Butterbot's capabilities. Let's get started, how can I assist you today!",
-              backgroundColor: "#ffeef1",
+              backgroundColor: "#E6DFFF",
               fontSize: 14,
               poweredByTextColor: "#ffeef1",
               botMessage: {
                 backgroundColor: "#f7f8ff",
                 textColor: "#303235",
                 showAvatar: true,
-                avatarSrc: "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/Screenshot_2023-07-17_at_04.57.21.png?v=1689593558",
+                avatarSrc: "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/bblogo.png?v=1690918654",
               },
               userMessage: {
-                backgroundColor: "#d57ef6",
+                backgroundColor: "#9101ea",
                 textColor: "#ffffff",
                 showAvatar: true,
                 avatarSrc: "https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png",
               },
               textInput: {
-                placeholder: "test out butterbot...",
+                placeholder: "test out ButterBot...",
                 backgroundColor: "#ffffff",
                 textColor: "#303235",
                 sendButtonColor: "#d9c4ff",

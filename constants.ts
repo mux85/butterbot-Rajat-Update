@@ -5,7 +5,7 @@ export const MAX_FREE_COUNTS = 1000;
 export const tools = [
 
   {
-    label: 'Start making your ButterBot now',
+    label: 'Create a new ButterBot',
     icon: Sparkles,
     color: "text-orange-700",
     bgColor: "bg-violet-500/10",

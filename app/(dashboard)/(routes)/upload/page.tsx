@@ -9,9 +9,11 @@ import { Loader } from "@/components/loader";
 import { Label } from "@/components/ui/label";
 import { Heading } from "@/components/heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, CheckCheck, Bot, ChevronRight, UploadCloud } from "lucide-react"
+import { Check, CheckCheck, Bot, ChevronRight, UploadCloud, MessageSquare } from "lucide-react"
 import axios from "axios";
 import { useUser } from "@clerk/nextjs"; // import auth from Clerk
+import { Switch } from "@/components/ui/switch";
+
 
 
 const BotCreationPage = () => {
@@ -24,6 +26,7 @@ const BotCreationPage = () => {
   const [bots, setBots] = useState([]);
   const [submittedBotName, setSubmittedBotName] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);  // new state variable
+  
   const { user } = useUser();
 
   const SCRAPING_API_URL = "https://gnoo.onrender.com/api/v1/prediction/1b5ba2b2-40a4-4413-b75c-012609b5e7fb";
@@ -124,14 +127,27 @@ const BotCreationPage = () => {
     ButterBot Name: {submittedBotName}
   </Badge>
 )}
-
-      <Heading
-        title="Upload your data"
-        description="add your files ButterBot to learn"
-        icon={UploadCloud}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
-      />
+      
+      <div className="flex justify-between items-center">
+        <Heading
+          title="Upload your data"
+          description="add your files ButterBot to learn"
+          icon={UploadCloud}
+          iconColor="text-violet-500"
+          bgColor="bg-violet-500/10"
+        />
+        {formSubmitted && (
+    <Link href={`/conversation?botName=${botName}`} passHref>
+      <Button as="a" className="bg-green-500 px-6 text-white hover:bg-green-600">
+        <div className="flex items-center">
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Test the bot
+        </div>
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </Link>
+  )}
+</div>
       <form className="grid w-full ml-0 items-start space-y-6" onSubmit={onSubmit}>
         <div className="space-y-2">
           <Label htmlFor="botName" className="font-bold">Enter Bot Name*</Label>
@@ -181,15 +197,7 @@ const BotCreationPage = () => {
               <CardTitle className="text-green-600 text-left font-bold text-2xl">Analysis Complete</CardTitle>  
               <Check className="text-green-600 ml-2"/>  
             </div>
-            <Link href={`/conversation?botName=${bot.botName}`} passHref>
-            <Button as="a" className="flex justify-between items-center bg-green-500 px-6 text-white hover:bg-green-600">
-                <div className="flex items-center">
-                  <Bot className="mr-2 h-4 w-4" />
-                  Test the bot
-                </div>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            
           </CardHeader>
           <CardContent className="grid grid-cols-3 gap-4">
             <div className="p-4 bg-white shadow-md">

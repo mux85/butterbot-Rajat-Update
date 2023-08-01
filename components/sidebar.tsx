@@ -1,5 +1,8 @@
 "use client";
 
+import * as React from "react"
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
@@ -27,7 +30,7 @@ const routes = [
   {
     label: 'Step 2 - Test your ButterBot',
     icon: MessageSquare,
-    href: '/chatbot',
+    href: '/conversation',
     color: "text-green-500",
   },
 
@@ -66,16 +69,18 @@ export const Sidebar = ({
   isPro: boolean;
 }) => {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();  // add this line
+
 
   return (
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
       <div className="px-3 py-2 flex-1">
         <Link href="/dashboard" className="flex items-center pl-3 mb-14">
           <div className="relative h-8 w-8 mr-4">
-            <Image fill alt="Logo" src="/logo2.png" />
+            <Image fill alt="Logo" src="/bblogo.png" />
           </div>
           <h1 className={cn("text-2xl font-bold", poppins.className)}>
-            Butterbot
+            ButterBot
           </h1>
         </Link>
         <div className="space-y-1">
@@ -84,7 +89,7 @@ export const Sidebar = ({
               key={route.href} 
               href={route.href}
               onClick={(e) => {
-                if (['/upload', '/chatbot', '/customise'].includes(route.href)) {
+                if (['/upload', '/conversation', '/customise'].includes(route.href)) {
                   e.preventDefault();
                 }
               }}
@@ -101,9 +106,16 @@ export const Sidebar = ({
           ))}
         </div>
       </div>
+      <button 
+  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+  className="text-base font-medium p-3 w-full justify-center items-center cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition flex items-center"
+>
+  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+  <span className="ml-2">Switch Theme</span>
+</button>
       <FreeCounter 
         apiLimitCount={apiLimitCount} 
-        isPro={isPro}
+        isPro={isPro} 
       />
     </div>
   );

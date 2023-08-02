@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useState } from "react";
-import { Check, Zap } from "lucide-react";
+import { Check, Zap, Code, Bot, MessageCircle, Settings2, FileStack, Share2, FolderSync, MessagesSquare, SlidersHorizontal } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { 
@@ -36,6 +36,56 @@ export const ProModal = () => {
       setLoading(false);
     }
   }
+  const customTools = [
+    {
+      label: 'Create Unlimited ButterBots',
+      icon: Bot,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Unlimited Messages',
+      icon: MessageCircle,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Use customer branding and logos',
+      icon: Settings2,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Add unlimited files and links',
+      icon: FileStack,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Share via link, embed, or API',
+      icon: Share2,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Monthly refresh of stored links',
+      icon: FolderSync,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Customise tone and answer style (coming soon)',
+      icon: MessagesSquare,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+    {
+      label: 'Analytics and conversation export (coming soon)',
+      icon: SlidersHorizontal,  // Replace with the desired icon
+      color: "text-violet-700",
+      bgColor: "bg-violet-500/10",
+    },
+  ];
 
   return (
     <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
@@ -50,24 +100,24 @@ export const ProModal = () => {
             </div>
           </DialogTitle>
           <DialogDescription className="text-center pt-2 space-y-2 text-zinc-900 font-medium">
-            {tools.map((tool) => (
-              <Card key={tool.href} className="p-3 border-black/5 flex items-center justify-between">
-                <div className="flex items-center gap-x-4">
-                  <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
-                    <tool.icon className={cn("w-6 h-6", tool.color)} />
-                  </div>
-                  <div className="font-semibold text-sm">
-                    {tool.label}
-                  </div>
-                </div>
-                <Check className="text-primary w-5 h-5" />
-              </Card>
-            ))}
-          </DialogDescription>
+  {customTools.map((tool) => (
+    <Card key={tool.href} className="p-3 border-black/5 flex items-center justify-between">
+      <div className="flex items-center gap-x-4">
+        <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
+          <tool.icon className={cn("w-6 h-6", tool.color)} />
+        </div>
+        <div className="font-semibold text-sm">
+          {tool.label}
+        </div>
+      </div>
+      <Check className="text-primary w-5 h-5" />
+    </Card>
+  ))}
+</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button disabled={loading} onClick={onSubscribe} size="lg" variant="premium" className="w-full">
-            Upgrade
+            Upgrade - $19.99/mo
             <Zap className="w-4 h-4 ml-2 fill-white" />
           </Button>
         </DialogFooter>

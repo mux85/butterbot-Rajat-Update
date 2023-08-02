@@ -1,7 +1,8 @@
+import { NextResponse } from 'next/server';  // Add this line
 import prismadb from "@/lib/prismadb"
 
-export default async function handle(req, res) {
-  const { botName, url, file, userId } = req.body;
+export async function POST(req) {
+  const { botName, url, file, userId } = await req.json();  // Make sure to await req.json()
   
   console.log(`Received request to create bot: ${botName}`);
   
@@ -16,9 +17,9 @@ export default async function handle(req, res) {
     });
 
     console.log(`Bot created successfully: ${bot}`);
-    res.status(200).json(bot);
+    return NextResponse.json(bot);  // Use NextResponse here
   } catch (error) {
     console.error(`Unable to save bot: ${error}`);
-    res.status(500).json({ error: "Unable to save bot" });
+    return new NextResponse('Unable to save bot', { status: 500 });  // And here
   }
 }

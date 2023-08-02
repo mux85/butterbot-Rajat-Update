@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,47 +12,51 @@ import { Heading } from "@/components/heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, CheckCheck, Bot, ChevronRight, UploadCloud, MessageSquare } from "lucide-react"
 import axios from "axios";
-import { useUser } from "@clerk/nextjs"; // import auth from Clerk
+import { useUser } from "@clerk/nextjs";
 import { Switch } from "@/components/ui/switch";
 
-
-
-const BotCreationPage = () => {
+const EditBotPage = ({ botNameFromUrl }) => {
   const [loading, setLoading] = useState(false);
-  const [botName, setBotName] = useState("");
-  const [botNameError, setBotNameError] = useState("");
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState("");
   const [file, setFile] = useState(null);
   const [bots, setBots] = useState([]);
-  const [submittedBotName, setSubmittedBotName] = useState("");
-  const [formSubmitted, setFormSubmitted] = useState(false);  // new state variable
-  
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [botName, setBotName] = useState(botNameFromUrl);  // Add this line
+
   const { user } = useUser();
 
   const SCRAPING_API_URL = "https://gnoo.onrender.com/api/v1/prediction/1b5ba2b2-40a4-4413-b75c-012609b5e7fb";
   const PDF_API_URL = "https://butterbot-ml2y.onrender.com/api/v1/prediction/88e6f717-db04-40bc-a3d5-753a7582b37d";
+  
+  console.log(botName);
 
-
+  // New useEffect hook
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const botName = urlParams.get('botName');
+      console.log("Bot name from URL parameters: ", botName);
+      if (botName) {
+        setBotName(botName);
+      }
+    }
+  }, []);
+  
   function isValidURL(string) {
+    if (!string) return false;
     var res = string.match(/(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/);
     return (res !== null);
   };
 
   const handleFileChange = (event) => {
     const chosenFile = event.target.files[0];
-    // file size is in bytes, so we convert 10mb to bytes
     if (chosenFile && chosenFile.size > 5 * 1024 * 1024) {
       toast.error("File size must be less than 5MB");
       setFile(null);
     } else {
       setFile(chosenFile);
     }
-  };
-
-  const handleBotNameChange = (event) => {
-    setBotName(event.target.value);
-    setBotNameError('');  
   };
 
   const handleUrlChange = (event) => {
@@ -62,40 +66,31 @@ const BotCreationPage = () => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    if (!botName) {
+      console.error("botName is undefined");
+      return;
+    }
     const userId = user.id;
     setFormSubmitted(false);
-    setSubmittedBotName(botName);  
-
-    if (botName === '') {
-      setBotNameError("Bot name is required");
+  
+    if ((url === '' || !isValidURL(url)) && file === null) {
+      setUrlError("Either a valid URL or a file is required");
       return;
     }
-
-    if (url === '' && file === null) {
-      setUrlError("Either a URL or a file is required");
-      return;
-    }
-
-    // URL validation
-    if (url !== '' && !isValidURL(url)) {
-      setUrlError("Oops, invalid URL! Make sure your URL starts with \"http\" or \"https\", includes a domain and for best results, just copy it straight from your address bar.");
-    return;
-      return;
-    }
-
-    if (botName !== '' && (url !== '' || file !== null)) {
+  
+    if (url !== '' || file !== null) {
       setLoading(true);
       const payload = {
         "question": "Hey, how are you?",
         "overrideConfig": {
           "url": url,
-          "pineconeNamespace": botName,
+          "pineconeNamespace": botName,  
           "pineconeIndex": "keeko",
           "pineconeEnv": "northamerica-northeast1-gcp",
           "webScrap": true,
         },
       };
-
+  
       try {
         let res;
         if (url !== '') {
@@ -103,117 +98,81 @@ const BotCreationPage = () => {
         } else if (file !== null) {
           const formData = new FormData();
           formData.append("files", file);
-          formData.append("pineconeNamespace", botName);  // Use the bot name from the form data
+          formData.append("pineconeNamespace", botName); 
           res = await axios.post(PDF_API_URL, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           });
         }
-
+  
         if (res.status === 200) {
           setBots(prevBots => [...prevBots, { botName: botName, url: url, file: file }]);
           setLoading(false);
-          setBotName(botName);
           setUrl("");
-         setFile(null);
-         setFormSubmitted(true); 
-        
-         // New: Now that the bot is created, save it to the database
-        try {
-          const botRes = await fetch('/api/chatbot', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              botName,
-              url,
-              file: file ? file.name : '',  // Store the file name in the database
-              userId,
-            }),
-          });
-
-          // If the bot was saved successfully, show a success message
-          if (botRes.ok) {
-            toast.success("Bot saved successfully!");
-          } else {
-            // If there was an error, show an error message
-            const errorMessage = await botRes.text();
-            toast.error(`Failed to save bot: ${errorMessage}`);
+          setFile(null);
+          setFormSubmitted(true);
+  
+          try {
+            const botRes = await fetch(`/api/editbot`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                botName: botName, 
+                url,
+                file: file ? file.name : '',
+                userId,
+               }),
+            });
+  
+            console.log(botRes);
+  
+            if (botRes.ok) {
+              toast.success("Bot updated successfully!");
+            } else {
+              const errorMessage = await botRes.text();
+              toast.error(`Failed to update bot: ${errorMessage}`);
+            }
+          } catch (error) {
+            console.error('Failed to update bot:', error);
+            toast.error('Failed to update bot');
           }
-        } catch (error) {
-          console.error('Failed to save bot:', error);
-          toast.error('Failed to save bot');
-        } 
-
+  
         } else {
           setLoading(false);
           console.error(`An error occurred while processing the input. Status code: ${res.status}`);
         }
       } catch (error) {
         console.error(error);
-        
-        // Check if the error message contains the specific error string
+  
         if (error.response && error.response.data.includes("Vector dimension 0 does not match the dimension of the index 1536")) {
-            setBots(prevBots => [...prevBots, { botName: botName, url: url, file: file }]);
-            setBotName(botName);
-            setUrl("");
-            setFile(null);
-            setFormSubmitted(true);
-
-
+          setBots(prevBots => [...prevBots, { botName: botName, url: url, file: file }]);
+          setUrl("");
+          setFile(null);
+          setFormSubmitted(true);
         } else {
-          // For any other error, display a toast
           toast.error("Invalid URL details. Please check your submission again.");
-      }
-    } finally {
+        }
+      } finally {
         setLoading(false);
-    }
+      }
     }
   };
-
+  console.log("Bot name from URL: ", botName);  // Change this line
   return (
     <div className="px-4 lg:px-8 space-y-4">
      {formSubmitted && (
   <Badge variant="outline" className="mx-auto mb-4">
-    ButterBot Name: {submittedBotName}
+    ButterBot Name: {botName}  // Change this line
   </Badge>
 )}
       
-      <div className="flex justify-between items-center">
-        <Heading
-          title="Upload your data"
-          description="add your files ButterBot to learn"
-          icon={UploadCloud}
-          iconColor="text-violet-500"
-          bgColor="bg-violet-500/10"
-        />
-        {formSubmitted && (
-    <Link href={`/conversation?botName=${botName}`} passHref>
-      <Button as="a" className="bg-green-500 px-6 text-white hover:bg-green-600">
-        <div className="flex items-center">
-          <MessageSquare className="mr-2 h-4 w-4" />
-          Test the bot
-        </div>
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    </Link>
-  )}
-</div>
       <form className="grid w-full ml-0 items-start space-y-6" onSubmit={onSubmit}>
         <div className="space-y-2">
-          <Label htmlFor="botName" className="font-bold">Enter Bot Name*</Label>
-          <Input 
-            id="botName"
-            type="text" 
-            onChange={handleBotNameChange} 
-            placeholder="Enter a unique name for your bot"
-            className="w-full"
-            disabled={formSubmitted}
-          />
-          {botNameError && <p className="text-xs font-bold text-red-500">{botNameError}</p>}
-
+        <Label htmlFor="botName" className="font-bold">Bot Name</Label>
+          <div id="botName" className="font-bold">{botName}</div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="url" className="font-bold">Enter Website Address</Label>
@@ -223,6 +182,7 @@ const BotCreationPage = () => {
             onChange={handleUrlChange} 
             placeholder="Enter website URL : https://"
             className="w-full"
+            value={url}  // set the input's value to the bot's current url
           />
           {urlError && <p className="text-xs font-bold text-red-500">{urlError}</p>}
         </div>
@@ -250,7 +210,6 @@ const BotCreationPage = () => {
               <CardTitle className="text-green-600 text-left font-bold text-2xl">Analysis Complete</CardTitle>  
               <Check className="text-green-600 ml-2"/>  
             </div>
-            
           </CardHeader>
           <CardContent className="grid grid-cols-3 gap-4">
             <div className="p-4 bg-white shadow-md">
@@ -270,7 +229,7 @@ const BotCreationPage = () => {
       ))}
     </div>
   );
-  };
-  
-  export default BotCreationPage;
-  
+};
+
+
+export default EditBotPage;

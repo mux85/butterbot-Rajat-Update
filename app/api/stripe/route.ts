@@ -43,10 +43,10 @@ export async function GET() {
           price_data: {
             currency: "USD",
             product_data: {
-              name: "Genius Pro",
-              description: "Unlimited AI Generations"
+              name: "ButterBot Pro",
+              description: "Unlimited Messages, Unlimited ButterBots"
             },
-            unit_amount: 2000,
+            unit_amount: 1999,
             recurring: {
               interval: "month"
             }

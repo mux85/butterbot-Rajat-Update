@@ -1,6 +1,8 @@
 "use client";
 
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Link, Files, PlusCircle } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogCancel, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -15,14 +17,56 @@ import { cn } from "@/lib/utils";
 import { Bot, Trash, PlusSquare, Settings } from "lucide-react";  // import the icon components
 import { tools } from "@/constants";
 
-const bots = [
-  {id: 1, name: "Moqono", urls: "url1.com, url2.com", files: "file1.pdf, file2.pdf"},
-  {id: 2, name: "Habbit", urls: "url1.com, url2.com, url3.com", files: "file1.pdf"},
-  {id: 3, name: "Butter", urls: "url1.com", files: "file1.pdf, file2.pdf, file3.pdf"},
-];
+
 
 export default function HomePage() {
+  const [bots, setBots] = useState([]);
   const router = useRouter();
+  // State to track whether the delete confirmation dialog is open
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  // State to track the ID of the bot to delete
+  const [botToDelete, setBotToDelete] = useState(null);
+  
+
+  useEffect(() => {
+    fetch("/api/getbot", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setBots(data);
+    })
+    .catch((error) => console.error(error));
+  }, []);
+
+  // Add deleteBot function here
+  const deleteBot = async (botId) => {
+    try {
+      const response = await fetch('/api/deletebot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          botId,
+        }),
+      });
+  
+      if (response.ok) {
+        // Remove the deleted bot from the state
+        setBots(prevBots => prevBots.filter(bot => bot.id !== botId));
+      } else {
+        throw new Error('Failed to delete bot');
+      }
+    } catch (error) {
+      console.error('Failed to delete bot:', error);
+    }
+  };
+
 
   return (
     <div>
@@ -58,11 +102,12 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <Bot className="w-6 h-6 text-primary" />
-                    <CardTitle className="text-lg">{bot.name}</CardTitle>
+                    <CardTitle className="text-lg">{bot.botName}</CardTitle>
                   </div>
-                  <Button className="text-xs bg-gray-200 hover:bg-gray-300 text-black" onClick={() => router.push(`/bots/${bot.id}`)}>
-                    <Settings className="mr-2 h-4 w-4" /> Customise
-                  </Button>
+                  <Button className="text-xs bg-gray-200 hover:bg-gray-300 text-black" onClick={() => router.push(`/customise?botName=${bot.botName}`)}>
+  <Settings className="mr-2 h-4 w-4" /> Edit
+</Button>
+
                 </div>
               </CardHeader>
               <CardContent className="grid gap-4">
@@ -72,11 +117,9 @@ export default function HomePage() {
                     <p className="text-sm font-medium leading-none">
                       URLs Stored
                     </p>
-                    {bot.urls.split(', ').map((url, index) => (
-                      <p key={index} className="text-sm text-muted-foreground">
-                        {url}
-                      </p>
-                    ))}
+                    <p className="text-sm text-muted-foreground">
+                      {bot.url || "No URLs stored"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 rounded-md border p-4">
@@ -85,18 +128,33 @@ export default function HomePage() {
                     <p className="text-sm font-medium leading-none">
                       Files Stored
                     </p>
-                    {bot.files.split(', ').map((file, index) => (
-                      <p key={index} className="text-sm text-muted-foreground">
-                        {file}
-                      </p>
-                    ))}
+                    <p className="text-sm text-muted-foreground">
+                      {bot.file || "No files stored"}
+                    </p>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button variant="outline" className="text-xs mr-2" onClick={() => router.push(`/bots/${bot.id}`)}>
-                  <Trash className="mr-2 h-4 w-4" /> Delete
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" className="text-xs mr-2">
+                      <Trash className="mr-2 h-4 w-4" /> Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete this bot and remove your data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => deleteBot(bot.id)}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
                 <Button className="text-xs" onClick={() => router.push(`/bots/${bot.id}`)}>
                   <PlusSquare className="mr-2 h-4 w-4" /> Add memory
                 </Button>

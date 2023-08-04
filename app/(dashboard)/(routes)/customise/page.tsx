@@ -16,6 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+import Link from 'next/link';
 
 
 import { Heading } from "@/components/heading";
@@ -26,7 +27,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { Loader } from "@/components/loader";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-import { Music, Bot, MessageSquare } from "lucide-react";
+import { Music, Bot, MessageSquare, ChevronRight } from "lucide-react";
 
 const InputWithLabel = ({ label, children, style }) => {
   return (
@@ -36,7 +37,6 @@ const InputWithLabel = ({ label, children, style }) => {
     </div>
   );
 };
-
 const ColorPickerField = ({label, color, setColorPickerOpen, colorPickerOpen, field}) => {
   const ref = useRef();
 
@@ -82,13 +82,13 @@ const ColorPickerField = ({label, color, setColorPickerOpen, colorPickerOpen, fi
 
 const defaultValues = {
     imageURL1: 'https://cdn.shopify.com/s/files/1/0793/8418/3092/files/bblogo.png?v=1690918654',
-    imageURL2: 'https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg',
-    imageURL3: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Icon_robot.svg',
+    imageURL2: 'https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png',
+    imageURL3: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
     botMessageBackgroundColor: "#f7f8ff",
     botMessageTextColor: "#303235",
     userBackgroundMessageColor: "#3B81F6",
     userTextMessageColor: "#ffffff",
-    widgetBackgroundColor: "#3B81F6",
+    widgetBackgroundColor: "#dac8ff",
     sendButtonColor: "#3B81F6",
     heightPixels: 700,
     widthPixels: 400,
@@ -99,6 +99,7 @@ const defaultValues = {
 
 const CustomizeBotPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [proUser, setProUser] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [avatar1, setAvatar1] = useState(defaultValues.imageURL1);
   const [avatar2, setAvatar2] = useState(defaultValues.imageURL2);
@@ -219,11 +220,11 @@ return (
               <AccordionContent>
                 <div className="space-y-2 mb-8">
                 <Badge variant="outline" className="text-xs font-medium text-blue-900 hover:bg-transparent tracking-wide no-underline hover:no-underline">Choose Avatars</Badge>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-3 gap-8">
                     <FormField
                       name="imageURL1"
                       render={({ field }) => (
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
                           <InputWithLabel label={
                             <span className="flex items-center">
                               Widget Avatar
@@ -232,7 +233,7 @@ return (
                               </Badge>
                             </span>
                           }>
-                          <Input {...field} placeholder="add image link here..." onChange={(event) => {
+                          <Input {...field} placeholder="add image link here..." disabled={!proUser} onChange={(event) => {
                             setAvatar1(event.target.value);
                             field.onChange(event);
                           }} />
@@ -247,7 +248,7 @@ return (
                     <FormField
                       name="imageURL2"
                       render={({ field }) => (
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
                           <InputWithLabel label="User Avatar">
                           <Input {...field} placeholder="add image link here..." onChange={(event) => {
                             setAvatar2(event.target.value);
@@ -264,7 +265,7 @@ return (
                     <FormField
                       name="imageURL3"
                       render={({ field }) => (
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
                           <InputWithLabel label="Bot Avatar">
                           <Input {...field} placeholder="add image link here..." onChange={(event) => {
                             setAvatar3(event.target.value);
@@ -316,7 +317,7 @@ return (
             />
           )}
         />
-        <FormField
+    <FormField
   name="widgetBackgroundColor"
   render={({ field }) => (
     <ColorPickerField
@@ -331,10 +332,12 @@ return (
       color={field.value}
       setColorPickerOpen={setWidgetBgColorPickerOpen}
       colorPickerOpen={widgetBgColorPickerOpen}
-      field={field}
+      field={{...field, value: proUser ? field.value : defaultValues.widgetBackgroundColor}} // Use the default color if the user is not a Pro user
+      disabled={!proUser} // disable the color picker if the user is not a pro user
     />
   )}
 />
+
         <FormField
           name="userBackgroundMessageColor"
           render={({ field }) => (
@@ -450,10 +453,21 @@ return (
   </AccordionContent>
 </AccordionItem>
 </Accordion>
-<div className="mt-8">
+<div className="mt-8 flex justify-between">
   <Button type="submit" disabled={isLoading}>
     Generate Code
   </Button>
+  <div>
+    <Link href={`/dashboard`} passHref>
+      <Button as="a" className="bg-pink-500 px-6 text-white hover:bg-pink-600">
+        <div className="flex items-center">
+          <Bot className="mr-2 h-4 w-4" />
+          Return to Dashboard
+        </div>
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </Link>
+  </div>
 </div>
 </form>
 </Form>

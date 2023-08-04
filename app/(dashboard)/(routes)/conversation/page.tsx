@@ -60,7 +60,7 @@ const YourNewPage = () => {
               welcomeMessage: "Welcome to Butterbot! As part of this demo, we may only use part of your data. However, rest assured, you'll get a comprehensive sense of Butterbot's capabilities. Let's get started, how can I assist you today!",
               backgroundColor: "#E6DFFF",
               fontSize: 14,
-              poweredByTextColor: "#ffeef1",
+              poweredByTextColor: "#E6DFFF",
               botMessage: {
                 backgroundColor: "#f7f8ff",
                 textColor: "#303235",

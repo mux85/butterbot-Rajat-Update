@@ -182,13 +182,13 @@ const BotCreationPage = () => {
 )}
       
       <div className="flex justify-between items-center">
-        <Heading
-          title="Upload your data"
-          description="add your files ButterBot to learn"
-          icon={UploadCloud}
-          iconColor="text-violet-500"
-          bgColor="bg-violet-500/10"
-        />
+      <Heading
+  title={formSubmitted ? "Upload Successful" : "Upload your data"}
+  description="Add your files for ButterBot to learn"
+  icon={formSubmitted ? Check : UploadCloud}
+  iconColor={formSubmitted ? "text-green-500" : "text-violet-500"}
+  bgColor={formSubmitted ? "bg-green-500/10" : "bg-violet-500/10"}
+/>
         {formSubmitted && (
     <Link href={`/conversation?botName=${botName}`} passHref>
       <Button as="a" className="bg-green-500 px-6 text-white hover:bg-green-600">
@@ -227,7 +227,7 @@ const BotCreationPage = () => {
           {urlError && <p className="text-xs font-bold text-red-500">{urlError}</p>}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="pdfFile" className="font-bold">Upload PDF file</Label>
+          <Label htmlFor="pdfFile" className="font-bold">Upload PDF file (max 5 MB per file)</Label>
           <Input 
             id="pdfFile"
             type="file"

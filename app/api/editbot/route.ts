@@ -6,16 +6,16 @@ export async function POST(req) {
   console.log(req.body);
   try {
     const { userId } = auth(); 
-    const { botName, url, file } = req.body;  // changed botName to botNameFromUrl
+    const { botName, url, file } = req.body;  // botName here is actually the bot's id
 
-    console.log({ botName, url, file });  // changed botName to botNameFromUrl
+    console.log({ botName, url, file });
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const bot = await prismadb.bot.findUnique({
-      where: { botName: botName },  // changed botName to botNameFromUrl
+      where: { botName: botName }, // Change this from id: botName to botName: botName
     });
 
     if (!bot) {
@@ -28,14 +28,14 @@ export async function POST(req) {
     const updatedFile = file ? bot.file + "," + file : bot.file;
 
     await prismadb.bot.update({
-      where: { botName: botName },  // changed botName to botNameFromUrl
+      where: { botName: botName }, 
       data: { url: updatedUrl, file: updatedFile },
     });
 
     return new NextResponse("Bot updated successfully", { status: 200 });
   } catch (error) {
-    console.error(`Unable to update bot: ${error}`);
-    console.error({ botName, url, file });  // changed botName to botNameFromUrl
+    console.error('Unable to update bot:', error);
+    console.error({ botName, url, file });
     return new NextResponse("Unable to update bot", { status: 500 });
   }
 }

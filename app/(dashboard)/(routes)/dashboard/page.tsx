@@ -31,6 +31,7 @@ export default function HomePage() {
   const [isAddDataModalOpen, setIsAddDataModalOpen] = useState(false);
   const [newData, setNewData] = useState({ botId: '', type: '', value: '' });
   const [newDataError, setNewDataError] = useState('');
+  const [chosenFileName, setChosenFileName] = useState('');
   const [urlUploaded, setUrlUploaded] = useState(false);
   const [pdfUploaded, setPdfUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -99,9 +100,11 @@ export default function HomePage() {
     if (chosenFile && chosenFile.size > 5 * 1024 * 1024) {
       setNewDataError("File size must be less than 5MB");
     } else {
-      setNewData(prevData => ({ ...prevData, value: chosenFile }));
+      setNewData(prevData => ({ ...prevData, value: chosenFile, url: '' }));
+      setChosenFileName(chosenFile.name);  // Set the file name here
     }
   };
+  
 
   const addData = async (event) => {
     event.preventDefault();
@@ -175,21 +178,30 @@ export default function HomePage() {
         console.log("Bot object:", bot);
         console.log("Bot ID:", bot.id);
         console.log("Bot name:", bot.botName);
-        const updatedValue = bot[newData.type.toLowerCase()] ? bot[newData.type.toLowerCase()] + "," + newData.value : newData.value;
+        const updatedValue = newData.value;
         console.log("Updated bot:", bot, "Updated value:", updatedValue); 
+    
+        // Paste the new code here
+        let updateData = {
+          botId: bot.id,
+        };
+    
+        if (newData.type === 'URL') {
+          updateData.url = updatedValue;  // only change the url if adding a URL
+        }
+    
+        if (newData.type === 'PDF') {
+          updateData.file = chosenFileName;  // only change the file if adding a PDF
+        }
+    
         await fetch('/api/editbot', {
           method: 'POST',
-          // ...
-      
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            botName: bot.botName, 
-            url: newData.type === 'URL' ? updatedValue : bot.url,
-            file: newData.type === 'PDF' ? updatedValue : bot.file,
-          }),
-        });    
+          body: JSON.stringify(updateData),
+        });  
+    
       } catch (error) {
         console.error('Failed to update bot:', error);
       }
@@ -197,6 +209,8 @@ export default function HomePage() {
       throw new Error('Failed to add data');
     }
     setLoading(false);
+    
+    
   };
   
   
@@ -346,23 +360,23 @@ export default function HomePage() {
                 <CardContent className="grid gap-4">
                   <div className="flex items-center space-x-4 rounded-md border p-4">
                     <Link className="w-6 h-6 text-primary" />
-                    <div className="flex-1 space-y-1">
+                    <div className="flex-1 space-y-1 flex flex-wrap">
                       <p className="text-sm font-medium leading-none">
                         URLs Stored
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {bot.url || "No URLs stored"}
+                      <p className="text-xs text-muted-foreground overflow-wrap break-all">
+                        {bot.url ? bot.url.replace(/,/g, ', ') : "No URLs stored"}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 rounded-md border p-4">
                     <Files className="w-6 h-6 text-primary" />
-                    <div className="flex-1 space-y-1">
+                    <div className="flex-1 space-y-1 flex flex-wrap">
                       <p className="text-sm font-medium leading-none">
                         Files Stored
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {bot.file || "No files stored"}
+                      <p className="text-xs text-muted-foreground overflow-wrap break-all">
+                        {bot.file ? bot.file.replace(/,/g, ', ') : "No files stored"}
                       </p>
                     </div>
                   </div>

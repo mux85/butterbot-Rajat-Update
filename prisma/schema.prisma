@@ -25,11 +25,13 @@ model UserSubscription {
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 }
 model Bot {
-  id        String   @id @default(cuid())
-  botName   String   @unique
-  url       String
-  file      String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  botName     String   @unique
+  url         String   @db.VarChar(2000)
+  file        String   @db.VarChar(2000)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  themeString String   @db.VarChar(2000)
 }
+

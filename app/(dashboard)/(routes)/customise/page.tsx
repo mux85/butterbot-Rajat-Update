@@ -783,7 +783,7 @@ const CustomizeBotPage = () => {
               <SheetHeader>
                 <SheetTitle>Generated Code</SheetTitle>
                 <SheetDescription>
-                  Here's your personal ButterBot embed code:
+                  Heres your personal ButterBot embed code:
                 </SheetDescription>
               </SheetHeader>
               <div className="mt-4 p-0 text-left">

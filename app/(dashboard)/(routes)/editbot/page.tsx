@@ -165,7 +165,7 @@ const EditBotPage = ({ botNameFromUrl }) => {
     <div className="px-4 lg:px-8 space-y-4">
      {formSubmitted && (
   <Badge variant="outline" className="mx-auto mb-4">
-    ButterBot Name: {botName}  // Change this line
+    ButterBot Name: {botName} 
   </Badge>
 )}
       

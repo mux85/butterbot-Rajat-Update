@@ -66,6 +66,8 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
+    "@types/react-color": "^3.0.6",
+    "@types/react-copy-to-clipboard": "^5.0.4",
     "prisma": "^5.0.0"
   }
 }

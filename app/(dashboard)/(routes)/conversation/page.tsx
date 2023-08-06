@@ -58,9 +58,9 @@ const YourNewPage = () => {
             chatWindow: {
               height: 500,
               welcomeMessage: "Welcome to Butterbot! As part of this demo, we may only use part of your data. However, rest assured, you'll get a comprehensive sense of Butterbot's capabilities. Let's get started, how can I assist you today!",
-              backgroundColor: "#E6DFFF",
+              backgroundColor: "#ffffff",
               fontSize: 14,
-              poweredByTextColor: "#E6DFFF",
+              poweredByTextColor: "#ffffff",
               botMessage: {
                 backgroundColor: "#f7f8ff",
                 textColor: "#303235",
@@ -68,7 +68,7 @@ const YourNewPage = () => {
                 avatarSrc: "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/bblogo.png?v=1690918654",
               },
               userMessage: {
-                backgroundColor: "#9101ea",
+                backgroundColor: "#3a80f6",
                 textColor: "#ffffff",
                 showAvatar: true,
                 avatarSrc: "https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png",

@@ -185,7 +185,7 @@ const BotCreationPage = () => {
       <Heading
   title={formSubmitted ? "Upload Successful" : "Upload your data"}
   description="Add your files for ButterBot to learn"
-  icon={formSubmitted ? Check : UploadCloud}
+  icon={formSubmitted ? CheckCheck : UploadCloud}
   iconColor={formSubmitted ? "text-green-500" : "text-violet-500"}
   bgColor={formSubmitted ? "bg-green-500/10" : "bg-violet-500/10"}
 />
@@ -223,6 +223,7 @@ const BotCreationPage = () => {
             onChange={handleUrlChange} 
             placeholder="Enter website URL : https://"
             className="w-full"
+            disabled={formSubmitted}
           />
           {urlError && <p className="text-xs font-bold text-red-500">{urlError}</p>}
         </div>
@@ -234,6 +235,7 @@ const BotCreationPage = () => {
             onChange={handleFileChange}
             accept=".pdf"
             className="w-full"
+            disabled={formSubmitted}
           />
         </div>
         <Button type="submit" className="w-full mt-4">{loading ? "Processing..." : "Submit"}</Button>

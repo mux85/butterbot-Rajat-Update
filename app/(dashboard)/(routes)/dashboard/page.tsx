@@ -69,13 +69,13 @@ export default function HomePage() {
       .then((data) => {
         console.log("Fetched bots:", data); // <-- Add this line
         // Change bot.id to bot.botName
-        setBots(data.map((bot) => ({ ...bot, id: bot.id })));
+        setBots(data.map((bot: any) => ({ ...bot, id: bot.id })));
       })
       .catch((error) => console.error(error));
   }, []);
 
   // Add deleteBot function here
-  const deleteBot = async (botId) => {
+  const deleteBot = async (botId: any) => {
     try {
       console.log("Bot ID to delete:", botId);
       const response = await fetch("/api/deletebot", {
@@ -90,7 +90,7 @@ export default function HomePage() {
 
       if (response.ok) {
         // Remove the deleted bot from the state
-        setBots((prevBots) => prevBots.filter((bot) => bot.id !== botId));
+        setBots((prevBots: any[]) => prevBots.filter((bot: any) => bot.id !== botId));
       } else {
         throw new Error("Failed to delete bot");
       }

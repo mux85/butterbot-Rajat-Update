@@ -160,7 +160,7 @@ const EditBotPage = ({ botNameFromUrl }) => {
       }
     }
   };
-  console.log("Bot name from URL: ", botName);  // Change this line
+  console.log("Bot name from URL: ", botName);
   return (
     <div className="px-4 lg:px-8 space-y-4">
      {formSubmitted && (

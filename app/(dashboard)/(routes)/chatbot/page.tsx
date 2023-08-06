@@ -22,7 +22,7 @@ const YourNewPage = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const botNameFromUrl = urlParams.get('botName');
+    const botNameFromUrl = urlParams.get('botName') || '';
     console.log('botNameFromUrl: ', botNameFromUrl);
     setBotName(botNameFromUrl);
   }, []);

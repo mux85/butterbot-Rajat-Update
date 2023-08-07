@@ -334,7 +334,7 @@ const CustomizeBotPage = () => {
 
       const code = `
 <script type="module">
-  import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
+  import Chatbot from "https://cdn.jsdelivr.net/gh/rajathooda/butterbotembed@butterchatbot/dist/web.js"
   Chatbot.init({
     chatflowid: "80dde17d-aa68-4816-8750-0ac1d90682ba",
     apiHost: "https://butterbot-ml2y.onrender.com",

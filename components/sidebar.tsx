@@ -106,15 +106,9 @@ export const Sidebar = ({
           ))}
         </div>
       </div>
-      <button 
-  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-  className="text-base font-medium p-3 w-full justify-center items-center cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition flex items-center"
->
-  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-  <span className="ml-2">Switch Theme</span>
-</button>
+      
       <FreeCounter 
-        apiLimitCount={apiLimitCount} 
+      
         isPro={isPro} 
       />
     </div>

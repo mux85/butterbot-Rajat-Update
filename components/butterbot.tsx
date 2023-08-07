@@ -10,7 +10,7 @@ const Butterbot = () => {
             chatflowConfig={{ /* topK: 2 */ }}
             theme={{
                 button: {
-                    backgroundColor: "#dac8ff",
+                    backgroundColor: "#341964",
                     right: 20,
                     bottom: 20,
                     size: "large",

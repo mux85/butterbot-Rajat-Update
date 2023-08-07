@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { ArrowRight, Link, Files, PlusCircle, X } from "lucide-react";
 import axios from "axios";
+import Swal from 'sweetalert2'
+import { useProModal } from "@/hooks/use-pro-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,10 +43,14 @@ import { Input } from "@/components/ui/input";
 export default function HomePage() {
   const [bots, setBots] = useState([]);
   const router = useRouter();
+  const proModal = useProModal();
+  const [isProUser, setIsProUser] = useState(false);
   // State to track whether the delete confirmation dialog is open
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // State to track the ID of the bot to delete
   const [botToDelete, setBotToDelete] = useState(null);
+  const Swal = require('sweetalert2')
+  const [isStartDialogOpen, setIsStartDialogOpen] = useState(false);
   const [isAddDataModalOpen, setIsAddDataModalOpen] = useState(false);
   const [newData, setNewData] = useState({ botId: "", type: "", value: "" });
   const [newDataError, setNewDataError] = useState("");
@@ -72,6 +78,16 @@ export default function HomePage() {
         setBots(data.map((bot: any) => ({ ...bot, id: bot.id })));
       })
       .catch((error) => console.error(error));
+  }, []);
+
+  useEffect(() => {
+    async function fetchProStatus() {
+      const response = await fetch('/api/checkprostatus');
+      const data = await response.json();
+      setIsProUser(data.isPro);
+    }
+  
+    fetchProStatus();
   }, []);
 
   // Add deleteBot function here
@@ -258,7 +274,7 @@ export default function HomePage() {
       </div>
       <div className="px-4 md:px-20 lg:px-32 space-y-4">
         {tools.map((tool) =>
-          bots.length < 1 ? (
+          (bots.length < 1 || isProUser) ? (
             <Card
               onClick={() => router.push(tool.href)}
               key={tool.href}
@@ -276,7 +292,19 @@ export default function HomePage() {
             <Card
               key={tool.href}
               onClick={() =>
-                alert("You can't create more than one bot in free tier.")
+                Swal.fire({
+                  title: 'Only one saved ButterBot allowed in current plan',
+                  text: "tip: you can delete your current bot and create a new one",
+                  width: 600,
+                  showCancelButton: true,
+                  confirmButtonColor: '#6f5af7',
+                  cancelButtonColor: '#4a5568',
+                  confirmButtonText: 'Upgrade to Pro'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    proModal.onOpen(); // Open the ProModal when "Upgrade to Pro" is confirmed
+                  }
+                })
               }
               className="p-4 border-black/5 flex items-center justify-between hover:shadow-md transition cursor-pointer"
             >

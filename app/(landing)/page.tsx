@@ -6,11 +6,15 @@ import { PricingTable } from "@/components/pricing-modal";
 const LandingPage = () => {
   return ( 
     <div className="h-full ">
-      <LandingNavbar />
-      <LandingHero />
-      <FeaturesContent />
-      <PricingTable />
-    </div>
+  <LandingNavbar />
+  <LandingHero />
+  <div id="features">
+    <FeaturesContent />
+  </div>
+  <div id="pricing">
+    <PricingTable />
+  </div>
+</div>
    );
 }
  

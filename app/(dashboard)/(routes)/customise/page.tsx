@@ -39,6 +39,7 @@ import {
   ChevronRight,
   CheckCircle,
   Copy,
+  Sparkles,
 } from "lucide-react";
 
 const InputWithLabel = ({ label, children, style }) => {
@@ -147,6 +148,7 @@ const CustomizeBotPage = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const form = useForm({
+
     defaultValues: {
       imageURL1:
         "https://cdn.shopify.com/s/files/1/0793/8418/3092/files/bblogo.png?v=1690918654",
@@ -167,6 +169,17 @@ const CustomizeBotPage = () => {
       inputBoxText: "",
     },
   });
+
+  useEffect(() => {
+    async function fetchProStatus() {
+      const response = await fetch('/api/checkprostatus');
+      const data = await response.json();
+      setProUser(data.isPro);
+    } 
+
+    fetchProStatus();
+  }, []);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const botNameFromUrl = urlParams.get("botName");
@@ -513,7 +526,7 @@ const CustomizeBotPage = () => {
                         name="botMessageBackgroundColor"
                         render={({ field }) => (
                           <ColorPickerField
-                            label="Bot Message Background Color"
+                            label="Bot Message Background"
                             color={field.value}
                             setColorPickerOpen={setBotMsgBgColorPickerOpen}
                             colorPickerOpen={botMsgBgColorPickerOpen}
@@ -525,7 +538,7 @@ const CustomizeBotPage = () => {
                         name="botMessageTextColor"
                         render={({ field }) => (
                           <ColorPickerField
-                            label="Bot Message Text Color"
+                            label="Bot Message Text"
                             color={field.value}
                             setColorPickerOpen={setBotMsgTextColorPickerOpen}
                             colorPickerOpen={botMsgTextColorPickerOpen}
@@ -534,39 +547,55 @@ const CustomizeBotPage = () => {
                         )}
                       />
                       <FormField
-                        name="widgetBackgroundColor"
-                        render={({ field }) => (
-                          <ColorPickerField
-                            label={
-                              <span className="flex items-center">
-                                Widget Background
-                                <Badge
-                                  variant="premium"
-                                  className="uppercase text-xs py-1 ml-2"
-                                >
-                                  pro
-                                </Badge>
-                              </span>
-                            }
-                            color={field.value}
-                            setColorPickerOpen={setWidgetBgColorPickerOpen}
-                            colorPickerOpen={widgetBgColorPickerOpen}
-                            field={{
-                              ...field,
-                              value: proUser
-                                ? field.value
-                                : defaultValues.widgetBackgroundColor,
-                            }} // Use the default color if the user is not a Pro user
-                            disabled={!proUser} // disable the color picker if the user is not a pro user
-                          />
-                        )}
-                      />
+  name="widgetBackgroundColor"
+  render={({ field }) => (
+    <div style={{ position: 'relative' }}>
+      <ColorPickerField
+        label={
+          <span className="flex items-center">
+            Widget Background
+            <Badge
+              variant="premium"
+              className="uppercase text-xs py-1 ml-2"
+            >
+              pro
+            </Badge>
+          </span>
+        }
+        color={field.value}
+        setColorPickerOpen={setWidgetBgColorPickerOpen}
+        colorPickerOpen={widgetBgColorPickerOpen}
+        field={{
+          ...field,
+          value: proUser
+            ? field.value
+            : defaultValues.widgetBackgroundColor,
+        }}
+        disabled={!proUser}
+      />
+      {!proUser && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            cursor: 'not-allowed',
+          }}
+        ></div>
+      )}
+    </div>
+  )}
+/>
+
 
                       <FormField
                         name="userBackgroundMessageColor"
                         render={({ field }) => (
                           <ColorPickerField
-                            label="User Background Message Color"
+                            label="User Background Message"
                             color={field.value}
                             setColorPickerOpen={setUserBgMsgColorPickerOpen}
                             colorPickerOpen={userBgMsgColorPickerOpen}
@@ -578,7 +607,7 @@ const CustomizeBotPage = () => {
                         name="userTextMessageColor"
                         render={({ field }) => (
                           <ColorPickerField
-                            label="User Text Message Color"
+                            label="User Text Message"
                             color={field.value}
                             setColorPickerOpen={setUserTextMsgColorPickerOpen}
                             colorPickerOpen={userTextMsgColorPickerOpen}
@@ -590,7 +619,7 @@ const CustomizeBotPage = () => {
                         name="sendButtonColor"
                         render={({ field }) => (
                           <ColorPickerField
-                            label="Send Button Color"
+                            label="Send Button"
                             color={field.value}
                             setColorPickerOpen={setSendBtnColorPickerOpen}
                             colorPickerOpen={sendBtnColorPickerOpen}
@@ -753,7 +782,7 @@ const CustomizeBotPage = () => {
             </Accordion>
             <div className="mt-8 flex justify-between">
               <Button type="submit" disabled={isLoading}>
-                Generate Code
+                Generate Embed Code
               </Button>
               <div>
                 <Link href={`/dashboard`} passHref>
@@ -762,7 +791,7 @@ const CustomizeBotPage = () => {
                     className="bg-pink-500 px-6 text-white hover:bg-pink-600"
                   >
                     <div className="flex items-center">
-                      <Bot className="mr-2 h-4 w-4" />
+                      <Sparkles className="mr-2 h-4 w-4" />
                       Return to Dashboard
                     </div>
                     <ChevronRight className="h-4 w-4" />

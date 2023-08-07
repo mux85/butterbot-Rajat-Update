@@ -1,3 +1,13 @@
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+.swal2-popup {
+  font-size: 0.8rem !important;
+  font-family: Lato, sans-serif;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

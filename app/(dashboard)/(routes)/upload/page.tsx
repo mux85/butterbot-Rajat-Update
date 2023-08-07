@@ -184,7 +184,7 @@ const BotCreationPage = () => {
       <div className="flex justify-between items-center">
       <Heading
   title={formSubmitted ? "Upload Successful" : "Upload your data"}
-  description="Add your files for ButterBot to learn"
+  description={formSubmitted ? "you can add more files to your bot from the dashboard" : "Add your files for ButterBot to learn"}
   icon={formSubmitted ? CheckCheck : UploadCloud}
   iconColor={formSubmitted ? "text-green-500" : "text-violet-500"}
   bgColor={formSubmitted ? "bg-green-500/10" : "bg-violet-500/10"}
@@ -208,7 +208,7 @@ const BotCreationPage = () => {
             id="botName"
             type="text" 
             onChange={handleBotNameChange} 
-            placeholder="Enter a unique name for your bot"
+            placeholder="Please enter a unique name that is not easily guessable"
             className="w-full"
             disabled={formSubmitted}
           />
